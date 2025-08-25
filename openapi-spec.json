@@ -1,0 +1,78 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "translate-api",
+    "version" : "1.0"
+  },
+  "servers" : [ {
+    "url" : "https://[redacted].execute-api.eu-north-1.amazonaws.com/{basePath}",
+    "variables" : {
+      "basePath" : {
+        "default" : "translate-api"
+      }
+    }
+  } ],
+  "paths" : {
+    "/translate" : {
+      "post" : {
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/TranslateBodyRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "400" : {
+            "description" : "400 response",
+            "content" : { }
+          },
+          "200" : {
+            "description" : "200 response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TranslateBodyResponse"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "api_key" : [ ]
+        } ]
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "TranslateBodyRequest" : {
+        "type" : "object",
+        "properties" : {
+          "text" : {
+            "type" : "string",
+            "description" : "the source text to translate"
+          },
+          "language" : {
+            "type" : "string",
+            "description" : "the source language (optional)"
+          }
+        }
+      },
+      "TranslateBodyResponse" : {
+        "type" : "string",
+        "description" : "the translated text"
+      }
+    },
+    "securitySchemes" : {
+      "api_key" : {
+        "type" : "apiKey",
+        "name" : "x-api-key",
+        "in" : "header"
+      }
+    }
+  }
+}
