@@ -1,0 +1,8 @@
+name: pulumi-aws-lambda-translate
+description: Small translation rest api example showcasing pulumi, aws-lambda, aws-api-gateway and google-cloud-translate.
+runtime:
+  name: python
+  options:
+    toolchain: pip
+    virtualenv: venv
+
