@@ -1,4 +1,6 @@
 *.pyc
 venv/
+gcloud-access.json
+aws-credentials
 
 
