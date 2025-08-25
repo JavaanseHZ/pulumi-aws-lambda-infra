@@ -12,6 +12,7 @@ import infra.aws.apikeys as infra_aws_apikeys
 ######################
 ## Config Variables ##
 ######################
+
 gcloud_config = pulumi.Config("gcp")
 gcloud_project_id = gcloud_config.require("project")
 
@@ -19,7 +20,6 @@ gcloud_project_id = gcloud_config.require("project")
 #########################
 ## Google Cloud Access ##
 #########################
-## gcloud service account and api key saved in aws secret
 
 gcloud_translate_service_account_key = infra_gcloud_apikeys.create_api_key(
     pName="translate",
@@ -36,15 +36,14 @@ aws_translate_secret = infra_aws_secrets.create_secret(
 #####################
 ## Lambda Function ##
 #####################
-## lambda access to logging and gogle api secret - roles and policy
-# python deps
+
+# install python deps before deployment
 result = subprocess.run(
     ["pip", "install", "-r", "requirements.txt", "--target", ".", "--upgrade"],
     stdout=subprocess.PIPE,
     cwd="./app/src",
     check=True,
 )
-
 
 aws_translate_lambda_func = infra_aws_lambdas.create_lambda(
     pName="translate",
@@ -57,10 +56,10 @@ aws_translate_lambda_func = infra_aws_lambdas.create_lambda(
             }
 )
 
+
 #################
 ## API Gateway ##
 #################
-## rest api with openapi spec
 
 aws_translate_rest_api, aws_translate_stage = infra_aws_apigateways.create_rest_api(
 
@@ -163,7 +162,6 @@ aws_translate_rest_api, aws_translate_stage = infra_aws_apigateways.create_rest_
 ## API Key ##
 #############
 
-
 aws_translate_rest_api_key = infra_aws_apikeys.create_api_key(
     pName="translate",
     pRestApi=aws_translate_rest_api,
@@ -172,11 +170,15 @@ aws_translate_rest_api_key = infra_aws_apikeys.create_api_key(
 )
 
 
-# export endpoint
+############
+## Export ##
+############
+
 pulumi.export(
     "translate-rest-endpoint",
     aws_translate_stage.invoke_url.apply(lambda url: url + "/translate"),
 )
+
 pulumi.export(
     "translate-rest-api-key (x-api-key header)",
     aws_translate_rest_api_key.value,
