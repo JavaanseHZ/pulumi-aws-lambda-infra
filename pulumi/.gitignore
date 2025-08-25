@@ -1,7 +1,7 @@
 *.pyc
 venv/
-pulumi/app/src/**/*
-!pulumi/app/src/requirements.txt
-!pulumi/app/src/translate.py
+/pulumi/app/src/**/*
+!/pulumi/app/src/requirements.txt
+!/pulumi/app/src/translate.py
 
 
