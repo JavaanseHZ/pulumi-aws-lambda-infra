@@ -1,5 +1,0 @@
-config:
-  aws:region: eu-north-1
-  aws:shared_credentials_files: /home/ben/dev/pulumi-aws-lambda/aws-credentials
-  gcp:project: pulumi-aws-lambda-translate
-  gcp:credentials: /home/ben/dev/pulumi-aws-lambda/gcloud-access.json
