@@ -69,6 +69,8 @@ curl --request POST \
 }'
 ```
 
+The openapi spec is located in the [openapi-spec.json](https://github.com/JavaanseHZ/pulumi-aws-lamda-infra/blob/main/openapi-spec.json) file.
+
 #### REST endpoint
 
 - access control
