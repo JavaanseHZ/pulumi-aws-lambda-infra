@@ -13,54 +13,63 @@ The lambda function is deployed on AWS infrastructure on an API Gateway with a d
 The project is devided into two repositories:
 
 **pulumi-aws-lamda-infra**
-
-- infrastructure code in python using pulumi.
-
-- deployment pipeline
+- infrastructure code in python using pulumi
+- for now, also application code
+- deployment pipeline (not implemented yet)
 
 **pulumi-aws-lamda-app**
-
+[https://github.com/JavaanseHZ/pulumi-aws-lambda-app] (link to repo)
 - AWS lambda application code in python using aws lambda library
-- build pipeline
+- build pipeline (not implemented yet)
 
 Both repositories have a protected main branch.
 
 ### Pulumi
 
-The project is structured as follows:
+The pulumi project is structured as follows:
 
 - infra
-  - apigateways
-    - config.yaml
-    - translate:
-      - config.yaml
-      - openapi.json
-  - lambdas
-    - config.yaml
-    - translate:
-       - config.yaml
-  - iam
-    - config.yaml
-    - translate:
-       - config.yaml
+  - aws (pulimi aws entities)
+    - apigateways.py
+    - apikeys.py
+    - lambdas.py
+    - secrets.py
+  - gcloud (pulimi google cloud entities)
+    - apikeys.py 
+- \_\_main\_\_.py (pulimi main)
+- requirements.py (pulimi python dependencies)
+- Pulumi.yaml (pulimi config)
+- Pulumi.dev.yaml (pulumi dev stage config)
 
 ### Secrets
 
-Secrets are configured in the pulumi cloud.
-Access to the pulumi cloud is configured in the deployment pipeline.
+The google api key secret is configured in the AWS.
 
 ## Infrastructure
 
 ![infra-](infra.drawio.svg)
 
 ### Stages
+(not implemented)
 
 The setup is divided into a dev & a prod stage.
+
 The dev stage runs the newest version, the prod stage runs a dedicated version.
 
 ### API Gateway
 
-The API Gateway is accessible via the following URL:
+The API Gateway is accessible via via an URL and an api key.
+Example curl request:
+```
+curl --request POST \
+  --url [URL] \
+  --header 'Content-Type: application/json' 
+  --header 'x-api-key: [APIKEY]' \
+  --data '{
+	"text": "My car is red"
+}'
+```
+
 
 #### REST endpoint
 
@@ -69,45 +78,52 @@ The API Gateway is accessible via the following URL:
 - example request
 
 ### AWS Lambda
+(not implemented - lambda code directly in infra repo)
 
-THe Lambda is deployed via pulumi , the release artifact is the release generated on github.
+The Lambda is deployed via pulumi, the release artifact is the release generated via github actions.
 
 ### Google Cloud Translate
 
-Access to the google translate andpoint is configured via pulumi and injected as an environment variable into the AWS lambda application.
+Access to the google translate endpoint is configured via pulumi and injected as an AWS secret variable into the AWS lambda.
 
 ## Application
 
 ### Python (AWS Lambda)
 
 The application takes in two parameters:
-- source-language
-- source-text
+- language
+- text
 
-It translates the text using the gcloud python library abstracting the "projects.locations.translateText" method of the "Cloud Translation".
+It translates the text using the gcloud python library abstracting the ```projects.locations.translateText``` method of the ```Cloud Translation``` API.
+
+It returns the translated text.
 
 
 ### Validation
 
-not implemented
+(not implemented)
 
 Examples:
-- src-language field, as google provides an api which languages it supports
-- src-text , restriction on 
+- language field, as google provides an api which languages it supports
+- text, restriction on 
 
 ### Error Handling
 
-not implemented
+(not implemented)
 
-The google api errors are abstracted into a unified custom error handling.
+The google api errors could be abstracted into a unified custom error handling.
 
 ## Build
 
-The build is run on feature branches as a quality gate for merging.
-On the main branch, it will create a new versioned application release using Lambda Layers.
-The release is versioned using semantic versioning and conventional commits (not implemented).
+(not implemented)
+
+The build can run on feature branches as a quality gate for merging.
+On the main branch, it could create a new versioned application release using AWS Lambda layers.
+The release should be versioned using semantic versioning and conventional commits (not implemented).
 
 ### Github Actions
+
+(not implemented)
 
 The build is separated in 4 stages:
 
@@ -120,13 +136,21 @@ The build is separated in 4 stages:
 
 ### Release Artifact
 
-The relase artfact is uploaded to the Github repos release page, including an auto-generated release note.
+(not implemented)
+
+The release artfact is uploaded to the Github repos release page, including an auto-generated release note.
+
+It is also uploaded AWS as a lambda layer.
 
 ## Deployment
+
+(not implemented)
 
 The deployment is done via pulumi and automated via github actions.
 
 ### Github Actions
+
+(not implemented)
 
 The deployment is separated in 2 stages, both for dev and prod:
 
@@ -135,4 +159,4 @@ The deployment is separated in 2 stages, both for dev and prod:
 
 ### Secrets
 
-The secrets for AWS and Google Cloud are are managed in the Pulumi cloud
+The secrets for the Pulumi CLoud, AWS and Google Cloud are are managed in the Github Actions
