@@ -37,6 +37,14 @@ aws_translate_secret = infra_aws_secrets.create_secret(
 ## Lambda Function ##
 #####################
 ## lambda access to logging and gogle api secret - roles and policy
+# python deps
+result = subprocess.run(
+    ["pip", "install", "-r", "requirements.txt", "--target", ".", "--upgrade"],
+    stdout=subprocess.PIPE,
+    cwd="./app/src",
+    check=True,
+)
+
 
 aws_translate_lambda_func = infra_aws_lambdas.create_lambda(
     pName="translate",

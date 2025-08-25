@@ -48,14 +48,6 @@ def create_lambda(pName: str, pSecret:aws.secretsmanager.Secret , pEnvironment) 
         }),
     )
 
-    # # python deps
-    # result = subprocess.run(
-    #     ["pip", "install", "-r", "requirements.txt", "--target", ".", "--upgrade"],
-    #     stdout=subprocess.PIPE,
-    #     cwd="./app/src",
-    #     check=True,
-    # )
-
     ## function
     aws_lambda_func = aws.lambda_.Function(
         f"{pName}-lambda",
