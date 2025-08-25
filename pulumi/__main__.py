@@ -2,11 +2,16 @@ import json
 import pulumi
 import pulumi_aws as aws
 import pulumi_gcp as gcp
+import subprocess
 
 #########################
 ## Google Cloud Access ##
 #########################
 ## gcloud service account and api key saved in aws secret
+
+gcloud_config = pulumi.Config("gcp")
+gcloud_project_id = gcloud_config.require("project")
+
 gcloud_translate_service_account = gcp.serviceaccount.Account(
     "translate-service-account",
     account_id="translate-service-account",
@@ -15,7 +20,7 @@ gcloud_translate_service_account = gcp.serviceaccount.Account(
 
 gcloud_translate_iam_binding = gcp.projects.IAMBinding(
     "translate-service-account-iam-binding",
-    project=gcp.config.project,
+    project=gcloud_project_id,
     role="roles/cloudtranslate.user",
     members=[gcloud_translate_service_account.member]
 )
@@ -26,12 +31,12 @@ gcloud_translate_service_account_key = gcp.serviceaccount.Key(
 )
 
 aws_translate_secret = aws.secretsmanager.Secret(
-    "gcloud_service_account_key",
-    name="translate-secret"
+    "gcloud_service_account_key_secret",
+    name="translate-api-service_acount_key_secret"
 )
 
 aws_translate_secret_version = aws.secretsmanager.SecretVersion(
-    "gcloud_service_account_key",
+    "gcloud_service_account_key_secret",
     secret_id=aws_translate_secret.id,
     secret_string=gcloud_translate_service_account_key.private_key
 )
@@ -84,6 +89,16 @@ aws_translate_lamda_role_policy = aws.iam.RolePolicy(
     }),
 )
 
+
+
+# python deps
+result = subprocess.run(
+    ["pip", "install", "-r", "requirements.txt", "--target", ".", "--upgrade"],
+    stdout=subprocess.PIPE,
+    cwd="./app/src",
+    check=True,
+)
+
 ## function
 aws_translate_lambda_func = aws.lambda_.Function(
     "translate-lambda",
@@ -93,10 +108,12 @@ aws_translate_lambda_func = aws.lambda_.Function(
     environment={
         "variables": {
             "GCLOUD_SERVICE_ACCOUNT_KEY": aws_translate_secret.id,
-            "GCLOUD_PROJECT_ID": gcp.config.project,
+            "GCLOUD_PROJECT_ID": gcloud_project_id,
         },
     },
     code=pulumi.AssetArchive({".": pulumi.FileArchive("./app/src")}),
+    timeout=10,
+    memory_size=256
 )
 
 #################
@@ -109,8 +126,12 @@ aws_translate_rest_api = aws.apigateway.RestApi(
         {
             "swagger": "2.0",
             "info": {"title": "translate-api", "version": "1.0"},
+            "x-amazon-apigateway-api-key-source" : "HEADER",
             "paths": {
                 "/translate": {
+                    "security" : [ {
+                        "api_key" : [ ]
+                        } ],
                     "x-amazon-apigateway-any-method": {
                         "x-amazon-apigateway-integration": {
                             "uri": pulumi.Output.format(
@@ -125,6 +146,13 @@ aws_translate_rest_api = aws.apigateway.RestApi(
                     },
                 },
             },
+            "securityDefinitions" : {
+                "api_key" : {
+                "type" : "apiKey",
+                "name" : "x-api-key",
+                "in" : "header"
+                }
+            }
         }
     ),
 )
@@ -149,11 +177,32 @@ aws_translate_rest_invoke_permission = aws.lambda_.Permission(
     action="lambda:invokeFunction",
     function=aws_translate_lambda_func.name,
     principal="apigateway.amazonaws.com",
-    source_arn=aws_translate_stage.execution_arn.apply(lambda arn: arn + "*/*"),
+    source_arn=aws_translate_rest_api.execution_arn.apply(lambda execution_arn: f"{execution_arn}/*"),
 )
+
+aws_translate_rest_api_key = aws.apigateway.ApiKey("translate-api-rest-key")
+
+aws_translate_rest_plan = aws.apigateway.UsagePlan("translate-api-rest-plan", aws.apigateway.UsagePlanArgs(
+    api_stages=[
+        aws.apigateway.UsagePlanApiStageArgs(
+            api_id=aws_translate_rest_api.id,
+            stage=aws_translate_stage.stage_name,
+        ),
+    ],
+))
+
+aws_translate_rest_plan_key = aws.apigateway.UsagePlanKey("translate-api-rest-plan-key", aws.apigateway.UsagePlanKeyArgs(
+    key_id=aws_translate_rest_api_key.id,
+    key_type="API_KEY",
+    usage_plan_id=aws_translate_rest_plan.id,
+))
 
 # export endpoint
 pulumi.export(
     "translate-rest-endpoint",
     aws_translate_stage.invoke_url.apply(lambda url: url + "/translate"),
+)
+pulumi.export(
+    "translate-rest-api-key (x-api-key header)",
+    aws_translate_rest_api_key.value,
 )
