@@ -25,8 +25,12 @@ Both repositories have a protected main branch.
 
 ### Pulumi
 
-The pulumi project is structured as follows:
-
+The pulumi project is structured as follows: [pulumi/app/src]:
+```
+- app
+  - src
+    - translate.py (lambda function)
+    - requirements.txt (lambda python dependencies)
 - infra
   - aws (pulimi aws entities)
     - apigateways.py
@@ -35,10 +39,12 @@ The pulumi project is structured as follows:
     - secrets.py
   - gcloud (pulimi google cloud entities)
     - apikeys.py 
-- \_\_main\_\_.py (pulimi main)
+- __main__.py (pulimi main)
 - requirements.py (pulimi python dependencies)
 - Pulumi.yaml (pulimi config)
 - Pulumi.dev.yaml (pulumi dev stage config)
+```
+It is located in the [pulumi](https://github.com/JavaanseHZ/pulumi-aws-lamda-infra/tree/main/pulumi/) subfolder.
 
 ### Secrets
 
@@ -75,7 +81,7 @@ The openapi spec is located in the [openapi-spec.json](https://github.com/Javaan
 
 ### AWS Lambda
 
-The lambda code is located in the [pulumi/app/src] (https://github.com/JavaanseHZ/pulumi-aws-lamda-infra/tree/main/pulumi/app/src) subfolder.
+The lambda code is located in the [pulumi/app/src](https://github.com/JavaanseHZ/pulumi-aws-lamda-infra/tree/main/pulumi/app/src) subfolder.
 
 The dependecies are listed in the ```requirements.txt``` file, the function itself in the ```translate.py``` file.
 
