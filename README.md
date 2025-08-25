@@ -55,9 +55,10 @@ The setup is divided into a dev & a prod stage.
 
 The dev stage runs the newest version, the prod stage runs a dedicated version.
 
-### API Gateway
+### API Gateway & Rest Endpoint
 
-The API Gateway is accessible via via an URL and an api key.
+The API Gateway is accessible via via an URL and securfed via an api key.
+
 Example curl request:
 ```
 curl --request POST \
@@ -71,20 +72,18 @@ curl --request POST \
 
 The openapi spec is located in the [openapi-spec.json](https://github.com/JavaanseHZ/pulumi-aws-lamda-infra/blob/main/openapi-spec.json) file.
 
-#### REST endpoint
-
-- access control
-- documentation via open api spec
-- example request
 
 ### AWS Lambda
-(not implemented - lambda code directly in infra repo)
 
-The Lambda is deployed via pulumi, the release artifact is the release generated via github actions.
+The lambda code is located in the [pulumi/app/src] (https://github.com/JavaanseHZ/pulumi-aws-lamda-infra/tree/main/pulumi/app/src) subfolder.
+
+The dependecies are listed in the ```requirements.txt``` file, the function itself in the ```translate.py``` file.
+
+The Lambda is deployed via pulumi, the release artifact is the release generated via github actions. (not implemented - lambda code directly in infra repo)
 
 ### Google Cloud Translate
 
-Access to the google translate endpoint is configured via pulumi and injected as an AWS secret variable into the AWS lambda.
+Access to the google translate endpoint api key is configured via pulumi and injected as an AWS secret variable into the AWS lambda.
 
 ## Application
 
