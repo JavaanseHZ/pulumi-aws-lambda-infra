@@ -124,15 +124,25 @@ aws_translate_rest_api = aws.apigateway.RestApi(
     "translate-api",
     body=pulumi.Output.json_dumps(
         {
-            "swagger": "2.0",
-            "info": {"title": "translate-api", "version": "1.0"},
-            "x-amazon-apigateway-api-key-source" : "HEADER",
-            "paths": {
-                "/translate": {
-                    "security" : [ {
-                        "api_key" : [ ]
+            "openapi" : "3.0.1",
+            "info" : {
+                "title" : "translate-api",
+                "version" : "1.0"
+            },
+            "servers" : [ {
+                "url" : "/",
+                "variables" : {
+                    "basePath" : {
+                        "default" : "translate-api"
+                    }
+                }
+            } ],
+            "paths" : {
+                "/translate" : {
+                    "post" : {
+                        "security" : [ {
+                            "api_key" : [ ]
                         } ],
-                    "x-amazon-apigateway-any-method": {
                         "x-amazon-apigateway-integration": {
                             "uri": pulumi.Output.format(
                                 "arn:aws:apigateway:{0}:lambda:path/2015-03-31/functions/{1}/invocations",
@@ -143,19 +153,49 @@ aws_translate_rest_api = aws.apigateway.RestApi(
                             "httpMethod": "POST",
                             "type": "aws_proxy",
                         },
-                    },
-                },
+                        "requestBody": {
+                            "required": "true",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "$ref": "#/components/schemas/TranslateBody"
+                                    }
+                                }
+                            }
+                        }
+                    },                    
+                }
             },
-            "securityDefinitions" : {
-                "api_key" : {
-                "type" : "apiKey",
-                "name" : "x-api-key",
-                "in" : "header"
+            "components" : {
+                "securitySchemes" : {
+                    "api_key" : {
+                        "type" : "apiKey",
+                        "name" : "x-api-key",
+                        "in" : "header"
+                    }
+                },
+                "schemas": {
+                    "TranslateBody": {
+                        "type": "object",
+                        "properties": {
+                            "text": {
+                                "type": "string",
+                                "description": "the source text to translate"
+                            },
+                            "language": {
+                                "type": "string",
+                                "description": "the source language (optional)"
+                            }
+                        }
+                    }
                 }
             }
         }
     ),
 )
+
+
+
 
 # deployment
 aws_translate_deployment = aws.apigateway.Deployment(
@@ -168,7 +208,7 @@ aws_translate_stage = aws.apigateway.Stage(
     "translate-api-rest-stage",
     rest_api=aws_translate_rest_api.id,
     deployment=aws_translate_deployment.id,
-    stage_name="translate",
+    stage_name="translate-api",
 )
 
 # rest-api -> lambda permissions
@@ -180,6 +220,8 @@ aws_translate_rest_invoke_permission = aws.lambda_.Permission(
     source_arn=aws_translate_rest_api.execution_arn.apply(lambda execution_arn: f"{execution_arn}/*"),
 )
 
+
+# set api key for rest api endpoint
 aws_translate_rest_api_key = aws.apigateway.ApiKey("translate-api-rest-key")
 
 aws_translate_rest_plan = aws.apigateway.UsagePlan("translate-api-rest-plan", aws.apigateway.UsagePlanArgs(
