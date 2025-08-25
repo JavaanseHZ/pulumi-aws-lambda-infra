@@ -14,15 +14,19 @@ def handler(event, context):
     ## VALIDATION not really implemented - could also be separate lambda, e.g. supported languages. some stuff should also be done in api gateway
     try:
         eventBody = json.loads(event['body'])
-        logger.info(f"incoming event body: {eventJson}")
+        
+        logger.info(f"incoming event body: {eventBody}")
  
-        source_text = eventBody['text']
-        if not source_text:
-            raise ValueError("Missing text field in request")
-        if eventBody['language'] == "":
-            source_language_code = "en-US"
+        if 'text' in eventBody:
+            source_text = eventBody['text']
         else:
+            return {"statusCode": 400, "body": "missing the field [text] in request"}
+
+        if 'language' in eventBody:
             source_language_code = eventBody['language']
+        else:
+            source_language_code = "en-US"
+
         target_language_code = "da"
 
         ##get google api secret from aws secret manager
