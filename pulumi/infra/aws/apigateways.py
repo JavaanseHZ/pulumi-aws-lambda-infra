@@ -6,14 +6,12 @@ def create_rest_api(pName: str, pFunction, pBody):
         f"{pName}-api",
         body=pBody,
     )
-
-    # deployment
+    
     aws_deployment = aws.apigateway.Deployment(
         f"{pName}-deployment",
         rest_api=aws_rest_api.id,
     )
-
-    # stage
+    
     aws_stage = aws.apigateway.Stage(
         f"{pName}-api-rest-stage",
         rest_api=aws_rest_api.id,

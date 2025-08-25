@@ -17,6 +17,7 @@ def handler(event, context):
         
         logger.info(f"incoming event body: {eventBody}")
  
+        # check input fields - if text is missing return 400 HTTP response
         if 'text' in eventBody:
             source_text = eventBody['text']
         else:
@@ -29,12 +30,12 @@ def handler(event, context):
 
         target_language_code = "da"
 
-        ##get google api secret from aws secret manager
+        # get google api secret from aws secret manager
         aws_secrets_client = boto3.client('secretsmanager')
         aws_secret_name = os.environ['GCLOUD_SERVICE_ACCOUNT_KEY']
         gcloud_service_account_key = base64.b64decode(aws_secrets_client.get_secret_value(SecretId=aws_secret_name).get('SecretString'))
         
-        ##google translate text api request
+        # google translate text api request
         gcloud_project_id = os.environ.get("GCLOUD_PROJECT_ID")
         gcloud_credentials = Credentials.from_service_account_info(json.loads(gcloud_service_account_key))
         glcoud_translation_client = translate_v3.TranslationServiceClient(credentials=gcloud_credentials)

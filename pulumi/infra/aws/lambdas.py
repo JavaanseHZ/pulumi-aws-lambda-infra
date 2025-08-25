@@ -4,6 +4,7 @@ import pulumi_aws as aws
 
 def create_lambda(pName: str, pSecret:aws.secretsmanager.Secret , pEnvironment) -> aws.lambda_.Function:
     
+    # permissions for logging and secrets
     aws_lamda_role = aws.iam.Role(
         f"{pName}-role",
         assume_role_policy=json.dumps({

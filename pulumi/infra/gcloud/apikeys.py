@@ -2,6 +2,8 @@ import pulumi
 import pulumi_gcp as gcp
 
 def create_api_key(pName: str, pRole: str, pProject: str) -> gcp.projects.ApiKey:
+
+    # create api key for google translate api
     gcloud_service_account = gcp.serviceaccount.Account(
         f"{pName}-service-account",
         account_id=f"{pName}-service-account",
