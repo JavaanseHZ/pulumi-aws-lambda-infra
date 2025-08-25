@@ -154,13 +154,29 @@ aws_translate_rest_api = aws.apigateway.RestApi(
                             "type": "aws_proxy",
                         },
                         "requestBody": {
-                            "required": "true",
+                            "required": True,
                             "content": {
                                 "application/json": {
                                     "schema": {
-                                        "$ref": "#/components/schemas/TranslateBody"
+                                        "$ref": "#/components/schemas/TranslateBodyRequest"
                                     }
                                 }
+                            }
+                        },
+                        "responses": {
+                            "200": {
+                                "description": "successful translation and transletd text as return value",
+                                "content": {
+                                    "application/json": {
+                                        "schema": {
+                                            "$ref": "#/components/schemas/TranslateBodyResponse"
+                                        },
+                                        
+                                        }
+                                    }
+                                },
+                            "400": {
+                                "description": "the text field is missing in request"
                             }
                         }
                     },                    
@@ -175,7 +191,7 @@ aws_translate_rest_api = aws.apigateway.RestApi(
                     }
                 },
                 "schemas": {
-                    "TranslateBody": {
+                    "TranslateBodyRequest": {
                         "type": "object",
                         "properties": {
                             "text": {
@@ -187,7 +203,11 @@ aws_translate_rest_api = aws.apigateway.RestApi(
                                 "description": "the source language (optional)"
                             }
                         }
-                    }
+                    },
+                    "TranslateBodyResponse": {
+                        "type": "string",
+                        "description": "the translated text"
+                    },
                 }
             }
         }
