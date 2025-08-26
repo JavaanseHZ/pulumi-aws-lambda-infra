@@ -48,19 +48,9 @@ The pulumi project is structured as follows: [pulumi/app/src]:
 ```
 It is located in the [pulumi](https://github.com/JavaanseHZ/pulumi-aws-lambda-infra/tree/main/pulumi/) subfolder.
 
-### Secrets
-
-The google api key secret is configured in the AWS.
-
 ## Infrastructure
 
 ![infra-](infra.drawio.svg)
-
-### Stages
-
-The setup is currently has a dev stage.
-
-A pord stage could be configured to e.g. use different versions.
 
 ### API Gateway & Rest Endpoint
 
@@ -93,6 +83,12 @@ In a production setup the release artifact is created via [github actions in the
 
 Access to the google translate endpoint api key is configured via pulumi and injected as an AWS secret variable into the AWS lambda.
 
+### Stages
+
+The setup is currently has a dev stage.
+
+A prod stage could be configured to e.g. use different versions.
+
 ## Application
 
 ### Python (AWS Lambda)
@@ -104,6 +100,10 @@ The application takes in two parameters:
 It translates the text using the gcloud python library abstracting the ```projects.locations.translateText``` method of the ```Cloud Translation``` API.
 
 It returns the translated text.
+
+### Secrets
+
+The google api key secret is configured in the AWS.
 
 ### Validation
 
@@ -143,7 +143,7 @@ In a production setup, additional step could be:
 
 ### Secrets
 
-The secrets for the AWS are managed in the Github Actions settings.
+The secrets for the AWS cli are managed in the Github Actions settings.
 
 ### Release Artifact
 
