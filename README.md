@@ -21,9 +21,9 @@ The project is divided into two repositories:
 - build pipeline
 
 Currently the deployment artifact used is generated directly in the infrastructure code.
+This means the application repo is not really used yet.
 
-In a prodcution setup, main branches would be protected.
-
+In a prodcution setup, the main branches would be protected.
 
 ### Pulumi
 
