@@ -79,7 +79,6 @@ curl --request POST \
 
 The openapi spec is located in the [openapi-spec.json](https://github.com/JavaanseHZ/pulumi-aws-lambda-infra/blob/main/openapi-spec.json) file.
 
-
 ### AWS Lambda
 
 The lambda code is located in the [pulumi/app/src](https://github.com/JavaanseHZ/pulumi-aws-lambda-infra/tree/main/pulumi/app/src) subfolder.
