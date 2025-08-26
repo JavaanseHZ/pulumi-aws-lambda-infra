@@ -44,7 +44,7 @@ The pulumi project is structured as follows: [pulumi/app/src]:
 - Pulumi.yaml (pulimi config)
 - Pulumi.dev.yaml (pulumi dev stage config)
 ```
-It is located in the [pulumi](https://github.com/JavaanseHZ/pulumi-aws-lamda-infra/tree/main/pulumi/) subfolder.
+It is located in the [pulumi](https://github.com/JavaanseHZ/pulumi-aws-lambda-infra/tree/main/pulumi/) subfolder.
 
 ### Secrets
 
@@ -76,12 +76,12 @@ curl --request POST \
 }'
 ```
 
-The openapi spec is located in the [openapi-spec.json](https://github.com/JavaanseHZ/pulumi-aws-lamda-infra/blob/main/openapi-spec.json) file.
+The openapi spec is located in the [openapi-spec.json](https://github.com/JavaanseHZ/pulumi-aws-lambda-infra/blob/main/openapi-spec.json) file.
 
 
 ### AWS Lambda
 
-The lambda code is located in the [pulumi/app/src](https://github.com/JavaanseHZ/pulumi-aws-lamda-infra/tree/main/pulumi/app/src) subfolder.
+The lambda code is located in the [pulumi/app/src](https://github.com/JavaanseHZ/pulumi-aws-lambda-infra/tree/main/pulumi/app/src) subfolder.
 
 The dependecies are listed in the ```requirements.txt``` file, the function itself in the ```translate.py``` file.
 
