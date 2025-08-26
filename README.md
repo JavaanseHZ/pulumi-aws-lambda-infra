@@ -2,7 +2,9 @@
 
 An AWS lambda function in python that takes a text parameter and translates it to Danish using the google translate API.
 
-The lambda function is deployed on AWS infrastructure on an API Gateway with a documented REST endpoint and set up via pulumi.
+The lambda function is deployed on AWS infrastructure, accessible via an API Gateway with a documented REST endpoint.
+
+The infrastructure is set up via pulumi.
 
 # Project
 
@@ -20,8 +22,7 @@ The project is divided into two repositories:
 - AWS lambda application code in python using aws lambda library
 - build pipeline
 
-Currently the deployment artifact used is generated directly in the infrastructure code.
-This means the application repo is not really used yet.
+Currently the deployment artifact used is generated directly in the infrastructure code. This means the application repo is not really used yet.
 
 In a prodcution setup, the main branches would be protected.
 
@@ -107,11 +108,11 @@ The google api key secret is configured in the AWS.
 
 ### Validation
 
-Currently there's only a some minor input validation, e.g if the text field is missing.
+Currently there's only some minor input validation, e.g if the text field is missing.
 
 Additional validation could be done:
 - checking the request against the OpenApi schema in the gateway
-- checkcing the language field, as google provides an api which languages it supports
+- checking the language field, as google provides an api which languages it supports
 - text, restriction on chars or length
 
 ### Error Handling
@@ -157,4 +158,4 @@ The deployment is done via pulumi and could be automated via github actions.
 
 ### Secrets
 
-The secrets for the Pulumi Cloud, AWS and Google Cloud could be managed in the Github Actions.
+The secrets for the Pulumi Cloud, AWS and Google Cloud could be managed in the Github Actions settings.
