@@ -12,12 +12,12 @@ The lambda function is deployed on AWS infrastructure on an API Gateway with a d
 
 The project is devided into two repositories:
 
-**pulumi-aws-lamda-infra**([repo](https://github.com/JavaanseHZ/pulumi-aws-lambda-infra))
+**pulumi-aws-lambda-infra**([repo](https://github.com/JavaanseHZ/pulumi-aws-lambda-infra))
 - infrastructure code in python using pulumi
 - for now, also application code
 - deployment pipeline (not implemented yet)
 
-**pulumi-aws-lamda-app** ([repo](https://github.com/JavaanseHZ/pulumi-aws-lambda-app))
+**pulumi-aws-lambda-app** ([repo](https://github.com/JavaanseHZ/pulumi-aws-lambda-app))
 - AWS lambda application code in python using aws lambda library
 - build pipeline (not implemented yet)
 
