@@ -10,18 +10,20 @@ The lambda function is deployed on AWS infrastructure on an API Gateway with a d
 
 ### Git
 
-The project is devided into two repositories:
+The project is divided into two repositories:
 
 **pulumi-aws-lambda-infra** ([repo](https://github.com/JavaanseHZ/pulumi-aws-lambda-infra))
 - infrastructure code in python using pulumi
-- for now, also application code
 - deployment pipeline (not implemented yet)
-
-**pulumi-aws-lambda-app** ([repo](https://github.com/JavaanseHZ/pulumi-aws-lambda-app))
+- 
+*pulumi-aws-lambda-app* ([repo](https://github.com/JavaanseHZ/pulumi-aws-lambda-app))
 - AWS lambda application code in python using aws lambda library
-- build pipeline (not implemented yet)
+- build pipeline
 
-Both repositories have a protected main branch.
+Currently the deployment artifact used is generated directly in the infrastructure code.
+
+In a prodcution setup, main branches would be protected.
+
 
 ### Pulumi
 
@@ -55,11 +57,10 @@ The google api key secret is configured in the AWS.
 ![infra-](infra.drawio.svg)
 
 ### Stages
-(not implemented)
 
-The setup is divided into a dev & a prod stage.
+The setup is currently has a dev stage.
 
-The dev stage runs the newest version, the prod stage runs a dedicated version.
+A pord stage could be configured to e.g. use different versions.
 
 ### API Gateway & Rest Endpoint
 
@@ -85,7 +86,9 @@ The lambda code is located in the [pulumi/app/src](https://github.com/JavaanseHZ
 
 The dependecies are listed in the ```requirements.txt``` file, the function itself in the ```translate.py``` file.
 
-The Lambda is deployed via pulumi, the release artifact is the release generated via github actions. (not implemented - lambda code directly in infra repo)
+The Lambda is deployed via pulumi and directly from the app folder.
+
+In a production setup the release artifact is created via [github actions in the app repository](https://github.com/JavaanseHZ/pulumi-aws-lambda-app/blob/main/.github/workflows/build.yaml).
 
 ### Google Cloud Translate
 
@@ -103,65 +106,56 @@ It translates the text using the gcloud python library abstracting the ```projec
 
 It returns the translated text.
 
-
 ### Validation
 
-(not implemented)
+Currently there's only a some minor input validation, e.g if the text field is missing.
 
-Examples:
-- language field, as google provides an api which languages it supports
-- text, restriction on 
+Additional validation could be done:
+- checking the request against the OpenApi schema in the gateway
+- checkcing the language field, as google provides an api which languages it supports
+- text, restriction on chars or length
 
 ### Error Handling
 
-(not implemented)
+While there's a try/catch clause, error handling is not implemented.
 
-The google api errors could be abstracted into a unified custom error handling.
+The google api errors should be abstracted into a unified custom error handling.
 
 ## Build
 
-(not implemented)
-
 The build can run on feature branches as a quality gate for merging.
-On the main branch, it could create a new versioned application release using AWS Lambda layers.
-The release should be versioned using semantic versioning and conventional commits (not implemented).
+
+On the main branch, it creates a new versioned application release using AWS Lambda layers.
+
+The release could be versioned using semantic versioning and conventional commits (not implemented).
 
 ### Github Actions
 
-(not implemented)
-
-The build is separated in 4 stages:
+The build is separated in the following stages:
 
 - build code
-- static code analysis (not implemeted)
-- unit tests  (not implemeted)
-- reporting (not implemeted)
-- create version (only on main branch) (not implemeted)
-- release (only on main branch)
+- configure access to AWS
+- deploy to AWS (only on main branch)
 
-### Release Artifact
-
-(not implemented)
-
-The release artfact is uploaded to the Github repos release page, including an auto-generated release note.
-
-It is also uploaded AWS as a lambda layer.
-
-## Deployment
-
-(not implemented)
-
-The deployment is done via pulumi and automated via github actions.
-
-### Github Actions
-
-(not implemented)
-
-The deployment is separated in 2 stages, both for dev and prod:
-
-- deploy pulumi
-- short integration test (not implemented)
+In a production setup, additional step could be:
+- static code analysis
+- unit tests
+- reporting
 
 ### Secrets
 
-The secrets for the Pulumi CLoud, AWS and Google Cloud are are managed in the Github Actions
+The secrets for the AWS are managed in the Github Actions settings.
+
+### Release Artifact
+
+The release artfact is uploaded to AWS as a lambda layer.
+
+Additionally it could be uploaded to the Github repos release page, including an auto-generated release note.
+
+## Deployment
+
+The deployment is done via pulumi and could be automated via github actions.
+
+### Secrets
+
+The secrets for the Pulumi Cloud, AWS and Google Cloud could be managed in the Github Actions.
